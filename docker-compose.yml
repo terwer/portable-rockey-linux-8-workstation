@@ -5,6 +5,11 @@
 # ssh
 # docker exec -it rocky-linux-vnc bash
 # docker exec -it rocky-linux-vnc zsh
+# ROOT权限进去，用户改密码
+# docker ps
+# docker exec -it --user root rocky-linux-vnc /bin/bash
+# docker exec -it --user root rocky-linux-vnc /bin/zsh
+# passwd
 
 version: '3'
 services:
@@ -18,9 +23,56 @@ services:
       dockerfile: ./rocky-linux-vnc/Dockerfile
     ports:
         - 5901:5901
+        - 8082:8082
+        - 9532:9532
+        - 9564:9564
+        - 3306:3306
+        - 6379:6379
     volumes:
       - ./rocky-linux-vnc/home:/home
       - ./rocky-linux-vnc/root:/root
       - ./rocky-linux-vnc/app:/app
       - ./rocky-linux-vnc/workspace:/workspace
       - ./rocky-linux-vnc/scripts:/scripts
+  portable-mysql57:
+    image: terwer/portable-mysql57:5.7.38
+    container_name: portable-mysql57
+    build:
+      context: ./
+      dockerfile: ./portable-mysql57/Dockerfile
+    ports:
+      - "3306:3306"
+    environment:
+      # 最好使用此设定时区，其它镜像也可以使用，也可以用"TZ=Asia/Shanghai"
+      - "TZ=CST-8"
+      - "MYSQL_ROOT_PASSWORD=123456"
+      - "MYSQL_ROOT_HOST=%"
+      - "MYSQL_DATABASE=test"
+      - "MYSQL_USER=terwer"
+      - "MYSQL_PASSWORD=123456"
+    volumes:
+      - ./portable-mysql57/data:/var/lib/mysql
+      - ./portable-mysql57/init:/docker-entrypoint-initdb.d/
+      - ./portable-mysql57/sql:/opt/
+    restart: always
+  portable-redis:
+    image: terwer/portable-redis:5.7.38
+    container_name: portable-mysql57
+    build:
+      context: ./
+      dockerfile: ./portable-mysql57/Dockerfile
+    ports:
+      - "3306:3306"
+    environment:
+      # 最好使用此设定时区，其它镜像也可以使用，也可以用"TZ=Asia/Shanghai"
+      - "TZ=CST-8"
+      - "MYSQL_ROOT_PASSWORD=123456"
+      - "MYSQL_ROOT_HOST=%"
+      - "MYSQL_DATABASE=test"
+      - "MYSQL_USER=terwer"
+      - "MYSQL_PASSWORD=123456"
+    volumes:
+      - ./portable-mysql57/data:/var/lib/mysql
+      - ./portable-mysql57/init:/docker-entrypoint-initdb.d/
+      - ./portable-mysql57/sql:/opt/
+    restart: always

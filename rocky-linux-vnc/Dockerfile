@@ -46,13 +46,15 @@ RUN dnf groupinstall "xfce" -y \
     && dnf install tigervnc-server -y
 
 # 安装其他常用工具
-RUN dnf install sudo wget vim util-linux-user -y
+RUN dnf install sudo wget vim util-linux-user passwd -y
+RUN dnf install neofetch -y
+RUN dnf install firefox -y
 
 # alias
 # alias ll='ls -l'
 
 # 安装zsh
-RUN dnf install zsh -y
+RUN dnf install zsh -y 
 
 # 容器入口
 COPY ./rocky-linux-vnc/entrypoint.sh /entrypoint.sh
@@ -62,7 +64,14 @@ COPY ./rocky-linux-vnc/scripts /scripts
 # 创建普通用户
 RUN mkdir -p -- "/home"           \
     && mkdir -p -- "/home/terwer"
-RUN useradd -G root -m terwer -p 123456
+RUN useradd -G root -m terwer -p 123456 \
+    && usermod -s /bin/zsh terwer
+# 加入sudo users
+# docker exec -it --user root rocky-linux-vnc /bin/zsh
+# passwd
+# su
+# visudo
+# terwer  ALL=(ALL)       ALL
 
 # 一些需要ROOT权限的操作，比如目录
 RUN chown -R terwer: /home         \
@@ -83,6 +92,7 @@ USER terwer
 # oh-my-zsh
 # RUN echo "y" | (sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)") \
 # 可能需要在安装一次
+# chsh -s /bin/zsh
 RUN echo "y" | (sh /scripts/zsh/install.sh)
 # zsh语法校验（需手动设置）
 RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting

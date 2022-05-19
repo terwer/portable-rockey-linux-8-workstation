@@ -1,5 +1,7 @@
-# jenv
+# java
 .java-version
+.java
+.m2
 
 # idea
 .idea
@@ -18,3 +20,12 @@ workspace
 .zcompdump-*
 .ICEauthority
 .config
+.bash_history
+.local
+.mozilla
+.ssh
+Desktop
+logs
+
+# SmartTomcat
+.SmartTomcat
