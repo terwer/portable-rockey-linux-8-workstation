@@ -26,3 +26,11 @@ ENV LANG C.UTF-8
 # 设置时区
 # ENV TZ Asia/Shanghai
 ENV TZ CST-8
+
+RUN yum install vim -y \
+    && yum install net-tools -y
+
+# docker exec -it --user root portable-mysql57 /bin/bash
+# ifconfig
+# or
+# docker inspect portable-mysql57 | grep IPAddres
