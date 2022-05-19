@@ -1,2 +1,15 @@
 # jenv
 .java-version
+
+# idea
+.idea
+
+# xfce
+.dbus
+.cache
+.oh-my-zsh
+.zsh_history
+.vnc
+!.vnc/xstartup
+.Xauthority
+.zcompdump-*

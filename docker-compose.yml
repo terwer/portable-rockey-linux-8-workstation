@@ -1,0 +1,25 @@
+# 启动
+# docker-compose up
+# docker-compose up --build
+
+# ssh
+#
+
+version: '3'
+services:
+  rocky-linux-vnc:
+    privileged: true
+    tty: true
+    image: terwer/rockylinux:8.5.20220308
+    container_name: rocky-linux-vnc
+    build:
+      context: .
+      dockerfile: ./rocky-linux-vnc/Dockerfile
+    ports:
+        - 5901:5901
+    volumes:
+      - ./rocky-linux-vnc/home:/home
+      - ./rocky-linux-vnc/root:/root
+      - ./rocky-linux-vnc/app:/app
+      - ./rocky-linux-vnc/workspace:/workspace
+      - ./rocky-linux-vnc/scripts:/scripts
