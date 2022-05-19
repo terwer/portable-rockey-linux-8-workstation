@@ -47,7 +47,7 @@ RUN dnf groupinstall "xfce" -y \
 
 # 安装其他常用工具
 RUN dnf install sudo wget vim util-linux-user -y
-# alias ll='ls -l'
+
 # alias
 # alias ll='ls -l'
 
