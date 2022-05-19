@@ -46,7 +46,10 @@ RUN dnf groupinstall "xfce" -y \
     && dnf install tigervnc-server -y
 
 # 安装其他常用工具
-RUN dnf install wget vim -y
+RUN dnf install sudo wget vim util-linux-user -y
+# alias ll='ls -l'
+# alias
+# alias ll='ls -l'
 
 # 安装zsh
 RUN dnf install zsh -y
@@ -66,9 +69,9 @@ RUN chown -R terwer: /home         \
     && chown -R terwer: /scripts
 RUN chown -R terwer: /home/*       \
     && chown -R terwer: /scripts/*
-    
+
 # cleanup
-RUN rm /home/terwer/.zcompdump-*
+# RUN rm /home/terwer/.zcompdump-*
 
 # =================================
 # 从这里开始操作不再拥有ROOT权限

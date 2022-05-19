@@ -5,6 +5,9 @@
 .idea
 
 # xfce
+app
+root
+workspace
 .dbus
 .cache
 .oh-my-zsh
@@ -13,3 +16,5 @@
 !.vnc/xstartup
 .Xauthority
 .zcompdump-*
+.ICEauthority
+.config

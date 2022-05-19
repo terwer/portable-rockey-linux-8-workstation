@@ -3,7 +3,8 @@
 # docker-compose up --build
 
 # ssh
-#
+# docker exec -it rocky-linux-vnc bash
+# docker exec -it rocky-linux-vnc zsh
 
 version: '3'
 services:
