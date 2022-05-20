@@ -13,14 +13,17 @@
 
 # mysql57
 # docker exec -it --user root portable-mysql57 /bin/bash
+# docker inspect portable-mysql57 | grep IPAddres
 
 # redis
 # docker exec -it --user root portable-redis /bin/bash
+# docker inspect portable-redis | grep IPAddres
 
 version: '3'
 services:
   rocky-linux-vnc:
     privileged: true
+    stdin_open: true
     tty: true
     image: terwer/rockylinux:8.5.20220308
     container_name: rocky-linux-vnc
@@ -28,10 +31,10 @@ services:
       context: .
       dockerfile: ./rocky-linux-vnc/Dockerfile
     ports:
-        - 5901:5901
-        - 8082:8082
-        - 9532:9532
-        - 9564:9564
+        - "5901:5901"
+        - "8080:8080"
+        - "3307:3307"
+        - "6380:6380"
     volumes:
       - ./rocky-linux-vnc/home:/home
       - ./rocky-linux-vnc/root:/root
@@ -39,13 +42,15 @@ services:
       - ./rocky-linux-vnc/workspace:/workspace
       - ./rocky-linux-vnc/scripts:/scripts
   portable-mysql57:
+    stdin_open: true
+    tty: true
     image: terwer/portable-mysql57:5.7.38
     container_name: portable-mysql57
     build:
       context: ./
       dockerfile: ./portable-mysql57/Dockerfile
     ports:
-      - 3306:3306
+      - "3306:3306"
     environment:
       # 最好使用此设定时区，其它镜像也可以使用，也可以用"TZ=Asia/Shanghai"
       - "TZ=CST-8"
@@ -60,16 +65,18 @@ services:
       - ./portable-mysql57/sql:/opt/
     restart: always
   portable-redis:
+    stdin_open: true
+    tty: true
     image: terwer/portable-redis:7.0.0
     container_name: portable-redis
     build:
       context: ./
       dockerfile: ./portable-redis/Dockerfile
     ports:
-      - 6379:6379
+      - "6379:6379"
     environment:
       # 最好使用此设定时区，其它镜像也可以使用，也可以用"TZ=Asia/Shanghai"
       - "TZ=CST-8"
-    # volumes:
-    #    - ./portable-redis/conf:/usr/local/etc/redis
+    volumes:
+       - ./portable-redis/conf:/usr/local/etc/redis
     restart: always

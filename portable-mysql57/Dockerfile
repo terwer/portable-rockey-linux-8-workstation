@@ -34,3 +34,8 @@ RUN yum install vim -y \
 # ifconfig
 # or
 # docker inspect portable-mysql57 | grep IPAddres
+
+# 这里暂时无效
+# RUN sed -i 's/port\s*=\s*3306/port = 3307/' /etc/my.cnf
+# CMD ["mysqld"]
+# EXPOSE 3307
