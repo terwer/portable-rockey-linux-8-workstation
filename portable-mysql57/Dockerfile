@@ -36,7 +36,4 @@ ENV TZ CST-8
 COPY ./conf/my.cnf /etc/my.cnf
 # cp /var/log /mylog
 
-# 容器入口
-COPY ./entrypoint.sh /entrypoint.sh
-
 CMD ["mysqld"]
