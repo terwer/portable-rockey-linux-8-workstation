@@ -32,3 +32,9 @@ logs
 
 # MySQL
 data
+
+# macOS
+.DS_Store
+
+# temp
+mytemp

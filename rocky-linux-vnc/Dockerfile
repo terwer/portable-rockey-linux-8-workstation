@@ -7,8 +7,10 @@ LABEL maintainer="Terwer Green <youweics@163.com>"
 # 环境变量
 ENV LANG=C.UTF-8 \
     TZ=Asia/Shanghai \
-    TZ=CST-8 \
-    USER=terwer
+    TZ=CST-8
+
+# 用 root 用户操作
+USER root
 
 # 中科大rockeylinux源
 RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' \
@@ -17,9 +19,8 @@ RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' \
     /etc/yum.repos.d/Rocky-AppStream.repo \
     /etc/yum.repos.d/Rocky-BaseOS.repo \
     /etc/yum.repos.d/Rocky-Extras.repo \
-    /etc/yum.repos.d/Rocky-PowerTools.repo \
-    && dnf clean all \    
-    && dnf makecache
+    /etc/yum.repos.d/Rocky-PowerTools.repo
+RUN dnf clean all && dnf makecache
 
 # 更新
 RUN dnf update -y
@@ -35,68 +36,77 @@ RUN dnf config-manager --set-enabled powertools \
     && dnf copr enable stenstorp/lightdm -y
 
 # 安装开发者工具
-RUN dnf groupinstall -y "Development Tools" \
-    && dnf clean all \
+RUN dnf groupinstall -y "Development Tools"
+RUN dnf clean all \
     && dnf makecache \
     && dnf update -y
 
 # 安装Xfce、lightdm、vncserver
-RUN dnf groupinstall "xfce" -y \
-    && dnf install lightdm -y \
-    && dnf install tigervnc-server -y
+RUN dnf groupinstall "xfce" -y
+RUN dnf install lightdm -y
 
 # 安装其他常用工具
-RUN dnf install sudo wget vim util-linux-user passwd -y
+RUN dnf install sudo \
+    wget \
+    vim \
+    util-linux-user \
+    passwd \
+    -y
+
+# 显示系统信息    
 RUN dnf install neofetch -y
+
+# 浏览器
 RUN dnf install firefox -y
 
-# alias
-# alias ll='ls -l'
-
 # 安装zsh
-RUN dnf install zsh -y 
+RUN dnf install zsh -y
 
-# 容器入口
-COPY ./rocky-linux-vnc/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-COPY ./rocky-linux-vnc/scripts /scripts
+# 安装vncserver
+RUN dnf install tigervnc-server -y
 
 # 创建普通用户
-RUN mkdir -p -- "/home"           \
-    && mkdir -p -- "/home/terwer"
-RUN useradd -G root -m terwer -p 123456 \
-    && usermod -s /bin/zsh terwer
-# 加入sudo users
-# docker exec -it --user root rocky-linux-vnc /bin/zsh
-# passwd
-# su
-# visudo
-# terwer  ALL=(ALL)       ALL
+RUN useradd --create-home --no-log-init --shell /bin/zsh -G root terwer 
+RUN echo 'terwer:123456' | chpasswd
+RUN echo 'root:password' | chpasswd
+RUN chown -R terwer:terwer /home
 
-# 一些需要ROOT权限的操作，比如目录
-RUN chown -R terwer: /home         \
-    && chown -R terwer: /scripts
-RUN chown -R terwer: /home/*       \
-    && chown -R terwer: /scripts/*
+# ==========================
+# zsh以及环境变量
+# ==========================
+# 给root用户安装oh-my-zsh
+RUN git clone https://gitee.com/mirrors/oh-my-zsh.git ~/.oh-my-zsh \
+    && cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc \
+    && git clone https://gitee.com/playerfs/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions \
+    && git clone https://gitee.com/playerfs/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting \
+    && sed -i 's/^plugins=(/plugins=(zsh-autosuggestions zsh-syntax-highlighting /' ~/.zshrc \
+    && chsh -s /bin/zsh
 
-# cleanup
-# RUN rm /home/terwer/.zcompdump-*
+USER terwer
+# 为普通用户再安装一次oh-my-zsh
+RUN git clone https://gitee.com/mirrors/oh-my-zsh.git ~/.oh-my-zsh \
+    && cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc \
+    && git clone https://gitee.com/playerfs/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions \
+    && git clone https://gitee.com/playerfs/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting \
+    && sed -i 's/^plugins=(/plugins=(zsh-autosuggestions zsh-syntax-highlighting /' ~/.zshrc
+# 添加自定义环境变量
+RUN echo "source ~/.my_profile" >> ~/.bashrc
+RUN echo "source ~/.my_profile" >> ~/.zshrc
+RUN echo '# auto set env template' > ~/my_profile_auto.sh
+
+USER root
+# ===============================
+# 安装一些其他软件
+# ==============================
+RUN dnf install emacs -y
 
 # =================================
 # 从这里开始操作不再拥有ROOT权限
 # =================================
-
 # 切回普通用户
 USER terwer
 
-# oh-my-zsh
-# RUN echo "y" | (sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)") \
-# 可能需要在安装一次
-# chsh -s /bin/zsh
-RUN echo "y" | (sh /scripts/zsh/install.sh)
-# zsh语法校验（需手动设置）
-RUN git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-# vim ~/.zshrc
-# plugins=(git zsh-syntax-highlighting)
+# 容器入口
+COPY ./entrypoint.sh /entrypoint.sh
 
-CMD ["bash", "/entrypoint.sh"]
+CMD ["zsh", "/entrypoint.sh"]
