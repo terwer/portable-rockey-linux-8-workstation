@@ -22,61 +22,62 @@
 version: '3'
 services:
   rocky-linux-vnc:
-    privileged: true
-    stdin_open: true
-    tty: true
-    image: terwer/rockylinux:8.5.20220308
+    image: terwer/rockylinux:8.5
     container_name: rocky-linux-vnc
     build:
-      context: .
-      dockerfile: ./rocky-linux-vnc/Dockerfile
+      context: ./rocky-linux-vnc
+      dockerfile: Dockerfile
     ports:
         - "5901:5901"
         - "8080:8080"
         - "3307:3307"
         - "6380:6380"
     volumes:
-      - ./rocky-linux-vnc/home:/home
-      - ./rocky-linux-vnc/root:/root
       - ./rocky-linux-vnc/app:/app
       - ./rocky-linux-vnc/workspace:/workspace
       - ./rocky-linux-vnc/scripts:/scripts
-  portable-mysql57:
+      - ./rocky-linux-vnc/config:/config
+      - ./rocky-linux-vnc/mytemp:/mytemp
+    privileged: true
     stdin_open: true
     tty: true
-    image: terwer/portable-mysql57:5.7.38
-    container_name: portable-mysql57
-    build:
-      context: ./
-      dockerfile: ./portable-mysql57/Dockerfile
-    ports:
-      - "3306:3306"
-    environment:
-      # 最好使用此设定时区，其它镜像也可以使用，也可以用"TZ=Asia/Shanghai"
-      - "TZ=CST-8"
-      - "MYSQL_ROOT_PASSWORD=123456"
-      - "MYSQL_ROOT_HOST=%"
-      - "MYSQL_DATABASE=test"
-      - "MYSQL_USER=terwer"
-      - "MYSQL_PASSWORD=123456"
-    volumes:
-      - ./portable-mysql57/data:/var/lib/mysql
-      - ./portable-mysql57/init:/docker-entrypoint-initdb.d/
-      - ./portable-mysql57/sql:/opt/
-    restart: always
-  portable-redis:
-    stdin_open: true
-    tty: true
-    image: terwer/portable-redis:7.0.0
-    container_name: portable-redis
-    build:
-      context: ./
-      dockerfile: ./portable-redis/Dockerfile
-    ports:
-      - "6379:6379"
-    environment:
-      # 最好使用此设定时区，其它镜像也可以使用，也可以用"TZ=Asia/Shanghai"
-      - "TZ=CST-8"
-    volumes:
-       - ./portable-redis/conf:/usr/local/etc/redis
-    restart: always
+    restart: "no"
+  # portable-mysql57:
+  #   stdin_open: true
+  #   tty: true
+  #   image: terwer/portable-mysql57:5.7.38
+  #   container_name: portable-mysql57
+  #   build:
+  #     context: ./
+  #     dockerfile: ./portable-mysql57/Dockerfile
+  #   ports:
+  #     - "3306:3306"
+  #   environment:
+  #     # 最好使用此设定时区，其它镜像也可以使用，也可以用"TZ=Asia/Shanghai"
+  #     - "TZ=CST-8"
+  #     - "MYSQL_ROOT_PASSWORD=123456"
+  #     - "MYSQL_ROOT_HOST=%"
+  #     - "MYSQL_DATABASE=test"
+  #     - "MYSQL_USER=terwer"
+  #     - "MYSQL_PASSWORD=123456"
+  #   volumes:
+  #     - ./portable-mysql57/data:/var/lib/mysql
+  #     - ./portable-mysql57/init:/docker-entrypoint-initdb.d/
+  #     - ./portable-mysql57/sql:/opt/
+  #   # restart: always
+  # portable-redis:
+  #   stdin_open: true
+  #   tty: true
+  #   image: terwer/portable-redis:7.0.0
+  #   container_name: portable-redis
+  #   build:
+  #     context: ./
+  #     dockerfile: ./portable-redis/Dockerfile
+  #   ports:
+  #     - "6379:6379"
+  #   environment:
+  #     # 最好使用此设定时区，其它镜像也可以使用，也可以用"TZ=Asia/Shanghai"
+  #     - "TZ=CST-8"
+  #   volumes:
+  #      - ./portable-redis/conf:/usr/local/etc/redis
+  #   # restart: always

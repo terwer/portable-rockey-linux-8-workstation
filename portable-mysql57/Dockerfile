@@ -27,8 +27,9 @@ ENV LANG C.UTF-8
 # ENV TZ Asia/Shanghai
 ENV TZ CST-8
 
-RUN yum install vim -y \
-    && yum install net-tools -y
+# 没必要，直接使用docker inspect即可
+# RUN yum install vim -y \
+#     && yum install net-tools -y
 
 # docker exec -it --user root portable-mysql57 /bin/bash
 # ifconfig
