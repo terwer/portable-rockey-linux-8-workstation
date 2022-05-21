@@ -27,16 +27,16 @@ ENV LANG C.UTF-8
 # ENV TZ Asia/Shanghai
 ENV TZ CST-8
 
-# 没必要，直接使用docker inspect即可
-# RUN yum install vim -y \
-#     && yum install net-tools -y
-
 # docker exec -it --user root portable-mysql57 /bin/bash
 # ifconfig
 # or
 # docker inspect portable-mysql57 | grep IPAddres
 
-# 这里暂时无效
-# RUN sed -i 's/port\s*=\s*3306/port = 3307/' /etc/my.cnf
-# CMD ["mysqld"]
-# EXPOSE 3307
+# 替换配置文件
+COPY ./conf/my.cnf /etc/my.cnf
+# cp /var/log /mylog
+
+# 容器入口
+COPY ./entrypoint.sh /entrypoint.sh
+
+CMD ["mysqld"]
