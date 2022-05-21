@@ -11,9 +11,7 @@ ENV LANG C.UTF-8
 # ENV TZ Asia/Shanghai
 ENV TZ CST-8
 
-# RUN yum install vim -y
-
 # docker inspect portable-redis | grep IPAddres
 
-# COPY redis.conf /usr/local/etc/redis/redis.conf
-# CMD [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+COPY ./conf/redis.conf /usr/local/etc/redis/redis.conf
+CMD [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
