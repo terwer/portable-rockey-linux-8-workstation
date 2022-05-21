@@ -65,19 +65,19 @@ services:
   #     - ./portable-mysql57/init:/docker-entrypoint-initdb.d/
   #     - ./portable-mysql57/sql:/opt/
   #   # restart: always
-  # portable-redis:
-  #   stdin_open: true
-  #   tty: true
-  #   image: terwer/portable-redis:7.0.0
-  #   container_name: portable-redis
-  #   build:
-  #     context: ./
-  #     dockerfile: ./portable-redis/Dockerfile
-  #   ports:
-  #     - "6379:6379"
-  #   environment:
-  #     # 最好使用此设定时区，其它镜像也可以使用，也可以用"TZ=Asia/Shanghai"
-  #     - "TZ=CST-8"
-  #   volumes:
-  #      - ./portable-redis/conf:/usr/local/etc/redis
-  #   # restart: always
+  portable-redis:
+    image: terwer/portable-redis:7.0.0
+    container_name: portable-redis
+    build:
+     context: ./portable-redis
+     dockerfile: Dockerfile
+    ports:
+     - "6379:6379"
+    environment:
+     # 最好使用此设定时区，其它镜像也可以使用，也可以用"TZ=Asia/Shanghai"
+     - "TZ=CST-8"
+    volumes:
+      - ./portable-redis/conf:/myconf
+    stdin_open: true
+    tty: true
+    restart: "no"
