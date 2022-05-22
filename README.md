@@ -38,6 +38,7 @@ copy apps to app forder, like
 cp -r /Users/terwer/Documents/share/portable-linux-sync/app ./rocky-linux-vnc
 
 # windows
+cp -r /mnt/c/share/同步空间/portable-linux-sync/app ./rocky-linux-vnc
 
 # then
 cd /app
@@ -63,6 +64,7 @@ copy workspace files to workspace forder, like
 cp -r /Users/terwer/Documents/share/portable-linux-sync/workspace ./rocky-linux-vnc
 
 # windows
+cp -r /mnt/c/share/同步空间/portable-linux-sync/workspace ./rocky-linux-vnc
 ```
 
 then visit then via
