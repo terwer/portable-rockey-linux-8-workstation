@@ -22,7 +22,7 @@
 version: '3'
 services:
   rocky-linux-vnc:
-    image: terwer/rockylinux:8.5
+    image: terwer/rockylinux8:8.5
     container_name: rocky-linux-vnc
     build:
       context: ./rocky-linux-vnc
@@ -43,7 +43,7 @@ services:
   portable-mysql57:
     stdin_open: true
     tty: true
-    image: terwer/portable-mysql57:5.7.38
+    image: terwer/mysql57:5.7.38
     container_name: portable-mysql57
     build:
      context: ./portable-mysql57
@@ -65,7 +65,7 @@ services:
      - ./portable-mysql57/mylog:/mylog/
     restart: "no"
   portable-redis:
-    image: terwer/portable-redis:7.0.0
+    image: terwer/redis7:7.0.0
     container_name: portable-redis
     build:
      context: ./portable-redis
