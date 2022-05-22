@@ -14,8 +14,6 @@ workspace
 .cache
 .oh-my-zsh
 .zsh_history
-.vnc
-!.vnc/xstartup
 .Xauthority
 .zcompdump-*
 .ICEauthority
