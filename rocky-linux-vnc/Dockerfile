@@ -69,6 +69,7 @@ RUN dnf install tigervnc-server -y
 RUN useradd --create-home --no-log-init --shell /bin/zsh -G root terwer 
 RUN echo 'terwer:123456' | chpasswd
 RUN echo 'root:password' | chpasswd
+RUN echo "terwer ALL=(ALL) NOPASSWD:ALL" | tee -a /etc/sudoers
 RUN chown -R terwer:terwer /home
 
 # ==========================
@@ -97,6 +98,33 @@ USER root
 # 安装一些其他软件
 # ==============================
 RUN dnf install emacs -y
+RUN dnf install gedit -y
+
+# 安装中文语言包
+RUN yum -y install glibc-locale-source glibc-langpack-en glibc-langpack-zh
+RUN dnf install -y langpacks-zh_CN
+# 重新安装glibc-common
+RUN yum -y reinstall glibc-common
+# 编译生成语言库
+RUN localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
+# 设置语言默认值为中文，时区改为东八区
+RUN echo 'LANG="zh_CN.UTF-8"' > /etc/locale.conf
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+ENV LANG zh_CN.UTF-8
+ENV LC_ALL zh_CN.UTF-8
+
+# 安装ibus输入法
+RUN dnf install ibus ibus-libpinyin -y
+# 
+# 启动ibus
+# ibus-setup
+#
+# 然后把拼音输入法加进去
+# 
+# 设置环境变量
+# export GTK_IM_MODULE=ibus
+# export QT_IM_MODULE=ibus
+# export XMODIFIERS=@im=ibus
 
 # =================================
 # 从这里开始操作不再拥有ROOT权限
